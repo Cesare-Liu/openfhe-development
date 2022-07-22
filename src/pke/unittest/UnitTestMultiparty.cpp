@@ -391,20 +391,15 @@ protected:
             if (CKKSRNS_TEST == testData.testCaseType) {
                 // TODO (dsuponit): we have to rename MakeCKKSPackedPlaintext() to MakePackedPlaintext(). All of them have different input params
                 // for CKKS we need to convert vectors of integers to vectors of complex numbers
-                plaintext1 =
-                    cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(vectorOfInts1), 1, 0, nullptr, testData.slots);
-                plaintext2 =
-                    cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(vectorOfInts2), 1, 0, nullptr, testData.slots);
-                plaintext3 =
-                    cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(vectorOfInts3), 1, 0, nullptr, testData.slots);
-                plaintextSumInput =
-                    cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(sumInput), 1, 0, nullptr, testData.slots);
-                plaintextMultInput =
-                    cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(multInput), 1, 0, nullptr, testData.slots);
-                plaintextEvalSumInput =
-                    cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(evalSumInput), 1, 0, nullptr, testData.slots);
-                plaintextRotateInput =
-                    cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(rotateInput), 1, 0, nullptr, testData.slots);
+                auto aux              = cc->createCKKSPtxtAuxDefaults();
+                aux.slots             = testData.slots;
+                plaintext1            = cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(vectorOfInts1), aux);
+                plaintext2            = cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(vectorOfInts2), aux);
+                plaintext3            = cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(vectorOfInts3), aux);
+                plaintextSumInput     = cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(sumInput), aux);
+                plaintextMultInput    = cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(multInput), aux);
+                plaintextEvalSumInput = cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(evalSumInput), aux);
+                plaintextRotateInput  = cc->MakeCKKSPackedPlaintext(toComplexDoubleVec(rotateInput), aux);
             }
             else {
                 plaintext1            = cc->MakePackedPlaintext(vectorOfInts1);

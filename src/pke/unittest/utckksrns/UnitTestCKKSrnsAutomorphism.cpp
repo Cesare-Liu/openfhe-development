@@ -218,7 +218,7 @@ protected:
 
                 std::vector<std::complex<double>> inputVec =
                     (INVALID_INPUT_DATA == testData.error) ? vectorComplexFailure : vector8Complex;
-                Plaintext intArray = cc->MakeCKKSPackedPlaintext(inputVec);
+                Plaintext intArray = cc->MakeCKKSPackedPlaintext(inputVec, cc->createCKKSPtxtAuxDefaults());
 
                 std::vector<int32_t> indices{index, -index};
                 if (NO_KEY_GEN_CALL != testData.error) {
@@ -295,7 +295,7 @@ protected:
             KeyPair<Element> kp = cc->KeyGen();
 
             std::vector<std::complex<double>> inputVec = vector8Complex;
-            Plaintext intArray                         = cc->MakeCKKSPackedPlaintext(inputVec);
+            Plaintext intArray = cc->MakeCKKSPackedPlaintext(inputVec, cc->createCKKSPtxtAuxDefaults());
 
             if (NO_KEY_GEN_CALL != testData.error) {
                 if (INVALID_PRIVATE_KEY == testData.error)

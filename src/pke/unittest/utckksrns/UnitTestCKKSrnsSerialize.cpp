@@ -234,8 +234,11 @@ protected:
             }
             OPENFHE_DEBUG("step 3");
             std::vector<std::complex<double>> vals = {1.0, 3.0, 5.0, 7.0, 9.0, 2.0, 4.0, 6.0, 8.0, 11.0};
-            Plaintext plaintextShort               = cc->MakeCKKSPackedPlaintext(vals);
-            Plaintext plaintextShortL2D2           = cc->MakeCKKSPackedPlaintext(vals, 2, 2);
+            Plaintext plaintextShort               = cc->MakeCKKSPackedPlaintext(vals, cc->createCKKSPtxtAuxDefaults());
+            auto aux                               = cc->createCKKSPtxtAuxDefaults();
+            aux.depth                              = 2;
+            aux.level                              = 2;
+            Plaintext plaintextShortL2D2           = cc->MakeCKKSPackedPlaintext(vals, aux);
             Ciphertext<DCRTPoly> ciphertext        = cc->Encrypt(kp.publicKey, plaintextShort);
             Ciphertext<DCRTPoly> ciphertextL2D2    = cc->Encrypt(kp.publicKey, plaintextShortL2D2);
 
@@ -395,7 +398,7 @@ protected:
             KeyPair<Element> kp = cc->KeyGen();
 
             std::vector<std::complex<double>> vals = {1.0, 3.0, 5.0, 7.0, 9.0, 2.0, 4.0, 6.0, 8.0, 11.0};
-            Plaintext plaintextShort               = cc->MakeCKKSPackedPlaintext(vals);
+            Plaintext plaintextShort               = cc->MakeCKKSPackedPlaintext(vals, cc->createCKKSPtxtAuxDefaults());
             Ciphertext<DCRTPoly> ciphertext        = cc->Encrypt(kp.publicKey, plaintextShort);
 
             std::stringstream s;

@@ -605,18 +605,19 @@ protected:
         try {
             CryptoContext<Element> cc(UnitTestGenerateContext(testData.params));
 
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7, 1, 0, nullptr, testData.slots);
-            Plaintext plaintext1AddScalar =
-                cc->MakeCKKSPackedPlaintext(vectorOfInts0_7_Add, 1, 0, nullptr, testData.slots);
-            Plaintext plaintext1SubScalar =
-                cc->MakeCKKSPackedPlaintext(vectorOfInts0_7_Sub, 1, 0, nullptr, testData.slots);
-            Plaintext negatives1 = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7neg, 1, 0, nullptr, testData.slots);
-            Plaintext plaintext2 = cc->MakeCKKSPackedPlaintext(vectorOfInts7_0, 1, 0, nullptr, testData.slots);
+            auto aux                      = cc->createCKKSPtxtAuxDefaults();
+            aux.slots                     = testData.slots;
+            Plaintext plaintext1          = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7, aux);
+            Plaintext plaintext1AddScalar = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7_Add, aux);
+            Plaintext plaintext1SubScalar = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7_Sub, aux);
+            Plaintext negatives1          = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7neg, aux);
+            Plaintext plaintext2          = cc->MakeCKKSPackedPlaintext(vectorOfInts7_0, aux);
 
-            Plaintext plaintextAdd = cc->MakeCKKSPackedPlaintext(std::vector<std::complex<double>>(VECTOR_SIZE, 7), 1,
-                                                                 0, nullptr, testData.slots);  // vector of 7s
-            Plaintext plaintextSub = cc->MakeCKKSPackedPlaintext(
-                std::vector<std::complex<double>>{-7, -5, -3, -1, 1, 3, 5, 7}, 1, 0, nullptr, testData.slots);
+            // vector of 7s
+            Plaintext plaintextAdd =
+                cc->MakeCKKSPackedPlaintext(std::vector<std::complex<double>>(VECTOR_SIZE, 7), aux);
+            Plaintext plaintextSub =
+                cc->MakeCKKSPackedPlaintext(std::vector<std::complex<double>>{-7, -5, -3, -1, 1, 3, 5, 7}, aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -803,11 +804,13 @@ protected:
         try {
             CryptoContext<Element> cc(UnitTestGenerateContext(testData.params));
 
-            Plaintext plaintext1    = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7, 1, 0, nullptr, testData.slots);
-            Plaintext plaintext2    = cc->MakeCKKSPackedPlaintext(vectorOfInts7_0, 1, 0, nullptr, testData.slots);
-            Plaintext plaintextNeg  = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7_Neg, 1, 0, nullptr, testData.slots);
-            Plaintext plaintextMult = cc->MakeCKKSPackedPlaintext(
-                std::vector<std::complex<double>>({0, 6, 10, 12, 12, 10, 6, 0}), 1, 0, nullptr, testData.slots);
+            auto aux               = cc->createCKKSPtxtAuxDefaults();
+            aux.slots              = testData.slots;
+            Plaintext plaintext1   = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7, aux);
+            Plaintext plaintext2   = cc->MakeCKKSPackedPlaintext(vectorOfInts7_0, aux);
+            Plaintext plaintextNeg = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7_Neg, aux);
+            Plaintext plaintextMult =
+                cc->MakeCKKSPackedPlaintext(std::vector<std::complex<double>>({0, 6, 10, 12, 12, 10, 6, 0}), aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -944,21 +947,24 @@ protected:
         try {
             CryptoContext<Element> cc(UnitTestGenerateContext(testData.params));
 
+            auto aux     = cc->createCKKSPtxtAuxDefaults();
+            auto aux_d3  = cc->createCKKSPtxtAuxDefaults();
+            aux_d3.depth = 3;
             std::vector<std::complex<double>> vectorOfInts1(vectorOfInts0_7);
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts1);
+            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts1, aux);
 
-            std::vector<std::complex<double>> constantInts(
-                std::vector<std::complex<double>>(VECTOR_SIZE, 11));  // vector of 11s
-            Plaintext plaintextConst     = cc->MakeCKKSPackedPlaintext(constantInts);
-            Plaintext plaintextConstDeep = cc->MakeCKKSPackedPlaintext(constantInts, 3);
+            // vector of 11s
+            std::vector<std::complex<double>> constantInts(std::vector<std::complex<double>>(VECTOR_SIZE, 11));
+            Plaintext plaintextConst     = cc->MakeCKKSPackedPlaintext(constantInts, aux);
+            Plaintext plaintextConstDeep = cc->MakeCKKSPackedPlaintext(constantInts, aux_d3);
 
-            std::vector<std::complex<double>> constantInts2(
-                std::vector<std::complex<double>>(VECTOR_SIZE, -11));  // vector of "-11"s
-            Plaintext plaintextConst2     = cc->MakeCKKSPackedPlaintext(constantInts2);
-            Plaintext plaintextConst2Deep = cc->MakeCKKSPackedPlaintext(constantInts2, 3);
+            // vector of "-11"s
+            std::vector<std::complex<double>> constantInts2(std::vector<std::complex<double>>(VECTOR_SIZE, -11));
+            Plaintext plaintextConst2     = cc->MakeCKKSPackedPlaintext(constantInts2, aux);
+            Plaintext plaintextConst2Deep = cc->MakeCKKSPackedPlaintext(constantInts2, aux_d3);
 
-            Plaintext plaintext2 = cc->MakeCKKSPackedPlaintext(vectorOfInts7_0);
-            Plaintext plaintext3 = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7neg);
+            Plaintext plaintext2 = cc->MakeCKKSPackedPlaintext(vectorOfInts7_0, aux);
+            Plaintext plaintext3 = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7neg, aux);
 
             std::vector<std::complex<double>> vectorOfIntsMult(VECTOR_SIZE);
             std::vector<std::complex<double>> vectorOfIntsMult2(VECTOR_SIZE);
@@ -981,14 +987,14 @@ protected:
             // vectorOfIntsSubAfterMult = { -10,-4,0,2,2,0,-4,-10 };
             // vectorOfIntsAddAfterMult2 = { 11,17,31,47,59,61,47,11 };
             // vectorOfIntsSubAfterMult2 = { -11,-5,9,25,37,39,25,-11 };
-            Plaintext plaintextMult          = cc->MakeCKKSPackedPlaintext(vectorOfIntsMult);
-            Plaintext plaintexAddAfterMult   = cc->MakeCKKSPackedPlaintext(vectorOfIntsAddAfterMult);
-            Plaintext plaintexSubAfterMult   = cc->MakeCKKSPackedPlaintext(vectorOfIntsSubAfterMult);
-            Plaintext plaintexttMult2        = cc->MakeCKKSPackedPlaintext(vectorOfIntsMult2);
-            Plaintext plaintexAddAfterMult2  = cc->MakeCKKSPackedPlaintext(vectorOfIntsAddAfterMult2);
-            Plaintext plaintexSubAfterMult2  = cc->MakeCKKSPackedPlaintext(vectorOfIntsSubAfterMult2);
-            Plaintext plaintex2AddAfterMult2 = cc->MakeCKKSPackedPlaintext(vectorOfIntsSubAfterMult2);
-            Plaintext plaintex2SubAfterMult2 = cc->MakeCKKSPackedPlaintext(vectorOfIntsAddAfterMult2);
+            Plaintext plaintextMult          = cc->MakeCKKSPackedPlaintext(vectorOfIntsMult, aux);
+            Plaintext plaintexAddAfterMult   = cc->MakeCKKSPackedPlaintext(vectorOfIntsAddAfterMult, aux);
+            Plaintext plaintexSubAfterMult   = cc->MakeCKKSPackedPlaintext(vectorOfIntsSubAfterMult, aux);
+            Plaintext plaintexttMult2        = cc->MakeCKKSPackedPlaintext(vectorOfIntsMult2, aux);
+            Plaintext plaintexAddAfterMult2  = cc->MakeCKKSPackedPlaintext(vectorOfIntsAddAfterMult2, aux);
+            Plaintext plaintexSubAfterMult2  = cc->MakeCKKSPackedPlaintext(vectorOfIntsSubAfterMult2, aux);
+            Plaintext plaintex2AddAfterMult2 = cc->MakeCKKSPackedPlaintext(vectorOfIntsSubAfterMult2, aux);
+            Plaintext plaintex2SubAfterMult2 = cc->MakeCKKSPackedPlaintext(vectorOfIntsAddAfterMult2, aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -1109,11 +1115,12 @@ protected:
         try {
             CryptoContext<Element> cc(UnitTestGenerateContext(testData.params));
 
+            auto aux = cc->createCKKSPtxtAuxDefaults();
             std::vector<std::complex<double>> vectorOfInts1(vectorOfInts0_7);
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts1);
+            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts1, aux);
 
             std::vector<std::complex<double>> vectorOfInts2(vectorOfInts7_0);
-            Plaintext plaintext2 = cc->MakeCKKSPackedPlaintext(vectorOfInts2);
+            Plaintext plaintext2 = cc->MakeCKKSPackedPlaintext(vectorOfInts2, aux);
 
             std::vector<std::complex<double>> pCtMult(VECTOR_SIZE);
             std::vector<std::complex<double>> pCtMult3(VECTOR_SIZE);
@@ -1154,21 +1161,21 @@ protected:
                 pCt13[i]    = vectorOfInts1[i] - pCtMult3[i];
                 pCt14[i]    = vectorOfInts1[i] * pCtMult3[i];
             }
-            Plaintext plaintextCt3  = cc->MakeCKKSPackedPlaintext(pCt3);
-            Plaintext plaintextCt4  = cc->MakeCKKSPackedPlaintext(pCt4);
-            Plaintext plaintextCt5  = cc->MakeCKKSPackedPlaintext(pCt5);
-            Plaintext plaintextCt6  = cc->MakeCKKSPackedPlaintext(pCt6);
-            Plaintext plaintextCt7  = cc->MakeCKKSPackedPlaintext(pCt7);
-            Plaintext plaintextCt_5 = cc->MakeCKKSPackedPlaintext(pCt_5);
-            Plaintext plaintextCt_6 = cc->MakeCKKSPackedPlaintext(pCt_6);
-            Plaintext plaintextCt_7 = cc->MakeCKKSPackedPlaintext(pCt_7);
-            Plaintext plaintextCt8  = cc->MakeCKKSPackedPlaintext(pCt8);
-            Plaintext plaintextCt9  = cc->MakeCKKSPackedPlaintext(pCt9);
-            Plaintext plaintextCt10 = cc->MakeCKKSPackedPlaintext(pCt10);
-            Plaintext plaintextCt11 = cc->MakeCKKSPackedPlaintext(pCt11);
-            Plaintext plaintextCt12 = cc->MakeCKKSPackedPlaintext(pCt12);
-            Plaintext plaintextCt13 = cc->MakeCKKSPackedPlaintext(pCt13);
-            Plaintext plaintextCt14 = cc->MakeCKKSPackedPlaintext(pCt14);
+            Plaintext plaintextCt3  = cc->MakeCKKSPackedPlaintext(pCt3, aux);
+            Plaintext plaintextCt4  = cc->MakeCKKSPackedPlaintext(pCt4, aux);
+            Plaintext plaintextCt5  = cc->MakeCKKSPackedPlaintext(pCt5, aux);
+            Plaintext plaintextCt6  = cc->MakeCKKSPackedPlaintext(pCt6, aux);
+            Plaintext plaintextCt7  = cc->MakeCKKSPackedPlaintext(pCt7, aux);
+            Plaintext plaintextCt_5 = cc->MakeCKKSPackedPlaintext(pCt_5, aux);
+            Plaintext plaintextCt_6 = cc->MakeCKKSPackedPlaintext(pCt_6, aux);
+            Plaintext plaintextCt_7 = cc->MakeCKKSPackedPlaintext(pCt_7, aux);
+            Plaintext plaintextCt8  = cc->MakeCKKSPackedPlaintext(pCt8, aux);
+            Plaintext plaintextCt9  = cc->MakeCKKSPackedPlaintext(pCt9, aux);
+            Plaintext plaintextCt10 = cc->MakeCKKSPackedPlaintext(pCt10, aux);
+            Plaintext plaintextCt11 = cc->MakeCKKSPackedPlaintext(pCt11, aux);
+            Plaintext plaintextCt12 = cc->MakeCKKSPackedPlaintext(pCt12, aux);
+            Plaintext plaintextCt13 = cc->MakeCKKSPackedPlaintext(pCt13, aux);
+            Plaintext plaintextCt14 = cc->MakeCKKSPackedPlaintext(pCt14, aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -1352,7 +1359,7 @@ protected:
         try {
             CryptoContext<Element> cc(UnitTestGenerateContext(testData.params));
 
-            Plaintext plaintext = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7);
+            Plaintext plaintext = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7, cc->createCKKSPtxtAuxDefaults());
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -1395,24 +1402,26 @@ protected:
             const uint32_t ringDim = cc->GetRingDimension();
             uint32_t slots = (testData.slots != 0) ? testData.slots : (BATCH != 0) ? BATCH : cc->GetRingDimension() / 2;
 
+            auto aux  = cc->createCKKSPtxtAuxDefaults();
+            aux.slots = testData.slots;
             std::vector<std::complex<double>> vectorOfInts1(slots);
             for (uint32_t i = 0; i < slots; i++) {
                 vectorOfInts1[i] = rand() % 10;  // NOLINT
             }
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts1, 1, 0, nullptr, testData.slots);
+            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts1, aux);
 
             std::vector<std::complex<double>> vIntsRightRotate2(slots);
             for (uint32_t i = 0; i < slots; i++) {
                 vIntsRightRotate2[(i + slots + 2) % slots] = vectorOfInts1[i];
             }
-            Plaintext plaintextRight2 = cc->MakeCKKSPackedPlaintext(vIntsRightRotate2, 1, 0, nullptr, testData.slots);
+            Plaintext plaintextRight2 = cc->MakeCKKSPackedPlaintext(vIntsRightRotate2, aux);
 
             std::vector<std::complex<double>> vIntsLeftRotate2(slots);
             for (uint32_t i = 0; i < slots; i++) {
                 // here 2*slots for the case if slots = 1, to avoid negative index
                 vIntsLeftRotate2[(i + 2 * slots - 2) % slots] = vectorOfInts1[i];
             }
-            Plaintext plaintextLeft2 = cc->MakeCKKSPackedPlaintext(vIntsLeftRotate2, 1, 0, nullptr, testData.slots);
+            Plaintext plaintextLeft2 = cc->MakeCKKSPackedPlaintext(vIntsLeftRotate2, aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -1429,7 +1438,7 @@ protected:
              * using a smaller digit size in BV (when creating the crypto context cc).
              */
             std::vector<std::complex<double>> vOnes(slots, 1);  // all 1s
-            Plaintext pOnes           = cc->MakeCKKSPackedPlaintext(vOnes, 1, 0, nullptr, testData.slots);
+            Plaintext pOnes           = cc->MakeCKKSPackedPlaintext(vOnes, aux);
             Ciphertext<Element> cOnes = cc->Encrypt(kp.publicKey, pOnes);
             ciphertext1 *= cOnes;
 
@@ -1469,7 +1478,9 @@ protected:
         try {
             CryptoContext<Element> cc(UnitTestGenerateContext(testData.params));
 
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts1_8, 1, 0, nullptr, testData.slots);
+            auto aux             = cc->createCKKSPtxtAuxDefaults();
+            aux.slots            = testData.slots;
+            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts1_8, aux);
 
             // vIntsRightShift2 = { 0,0,1,2,3,4,5,6 } if slots > 8;
             // vIntsRightShift2 = { 7,8,1,2,3,4,5,6 } if slots = 8;
@@ -1483,7 +1494,7 @@ protected:
                     vIntsRightShift2[i] = 0;
                 }
             }
-            Plaintext plaintextRight2 = cc->MakeCKKSPackedPlaintext(vIntsRightShift2, 1, 0, nullptr, testData.slots);
+            Plaintext plaintextRight2 = cc->MakeCKKSPackedPlaintext(vIntsRightShift2, aux);
 
             // vIntsRightShift2 = { 3,4,5,6,7,8,0,0 } if slots > 8;
             // vIntsRightShift2 = { 3,4,5,6,7,8,1,2 } if slots = 8;
@@ -1496,7 +1507,7 @@ protected:
                     vIntsLeftShift2[i] = 0;
                 }
             }
-            Plaintext plaintextLeft2 = cc->MakeCKKSPackedPlaintext(vIntsLeftShift2, 1, 0, nullptr, testData.slots);
+            Plaintext plaintextLeft2 = cc->MakeCKKSPackedPlaintext(vIntsLeftShift2, aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -1512,7 +1523,7 @@ protected:
              * This helps hide the rotation noise and get the correct result without
              * using a smaller digit size in BV (when creating the crypto context cc).
              */
-            Plaintext pOnes           = cc->MakeCKKSPackedPlaintext(vectorOfInts1s, 1, 0, nullptr, testData.slots);
+            Plaintext pOnes           = cc->MakeCKKSPackedPlaintext(vectorOfInts1s, aux);
             Ciphertext<Element> cOnes = cc->Encrypt(kp.publicKey, pOnes);
             ciphertext1 *= cOnes;
 
@@ -1568,17 +1579,18 @@ protected:
             vSeven[0] = 7;
             std::vector<std::complex<double>> vEight(VECTOR_SIZE, 0);
             vEight[0]        = 8;
-            Plaintext pOne   = cc->MakeCKKSPackedPlaintext(vOne);
-            Plaintext pTwo   = cc->MakeCKKSPackedPlaintext(vTwo);
-            Plaintext pThree = cc->MakeCKKSPackedPlaintext(vThree);
-            Plaintext pFour  = cc->MakeCKKSPackedPlaintext(vFour);
-            Plaintext pFive  = cc->MakeCKKSPackedPlaintext(vFive);
-            Plaintext pSix   = cc->MakeCKKSPackedPlaintext(vSix);
-            Plaintext pSeven = cc->MakeCKKSPackedPlaintext(vSeven);
-            Plaintext pEight = cc->MakeCKKSPackedPlaintext(vEight);
+            auto aux         = cc->createCKKSPtxtAuxDefaults();
+            Plaintext pOne   = cc->MakeCKKSPackedPlaintext(vOne, aux);
+            Plaintext pTwo   = cc->MakeCKKSPackedPlaintext(vTwo, aux);
+            Plaintext pThree = cc->MakeCKKSPackedPlaintext(vThree, aux);
+            Plaintext pFour  = cc->MakeCKKSPackedPlaintext(vFour, aux);
+            Plaintext pFive  = cc->MakeCKKSPackedPlaintext(vFive, aux);
+            Plaintext pSix   = cc->MakeCKKSPackedPlaintext(vSix, aux);
+            Plaintext pSeven = cc->MakeCKKSPackedPlaintext(vSeven, aux);
+            Plaintext pEight = cc->MakeCKKSPackedPlaintext(vEight, aux);
 
-            Plaintext pMerged = cc->MakeCKKSPackedPlaintext(vectorOfInts1_8);
-            Plaintext pOnes   = cc->MakeCKKSPackedPlaintext(vectorOfInts1s);
+            Plaintext pMerged = cc->MakeCKKSPackedPlaintext(vectorOfInts1_8, aux);
+            Plaintext pOnes   = cc->MakeCKKSPackedPlaintext(vectorOfInts1s, aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -1639,10 +1651,11 @@ protected:
                 // otherwise it is better to create "out" without calculating values in the loop
                 out[i] = weights[0] * in1[i] + weights[1] * in2[i] + weights[2] * in3[i];
             }
-            Plaintext pIn1 = cc->MakeCKKSPackedPlaintext(in1);
-            Plaintext pIn2 = cc->MakeCKKSPackedPlaintext(in2);
-            Plaintext pIn3 = cc->MakeCKKSPackedPlaintext(in3);
-            Plaintext pOut = cc->MakeCKKSPackedPlaintext(out);
+            auto aux       = cc->createCKKSPtxtAuxDefaults();
+            Plaintext pIn1 = cc->MakeCKKSPackedPlaintext(in1, aux);
+            Plaintext pIn2 = cc->MakeCKKSPackedPlaintext(in2, aux);
+            Plaintext pIn3 = cc->MakeCKKSPackedPlaintext(in3, aux);
+            Plaintext pOut = cc->MakeCKKSPackedPlaintext(out, aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -1694,7 +1707,9 @@ protected:
             for (size_t i = 0; i < max; ++i) {
                 intvec[i] = (rand() % (ptm / 2)) * (rand() % 2 ? 1 : -1);  // NOLINT
             }
-            Plaintext plaintextInt = cc->MakeCKKSPackedPlaintext(intvec, 1, 0, nullptr, max);
+            auto aux               = cc->createCKKSPtxtAuxDefaults();
+            aux.slots              = testData.slots;
+            Plaintext plaintextInt = cc->MakeCKKSPackedPlaintext(intvec, aux);
 
             KeyPair<Element> kp = cc->KeyGen();
             EXPECT_EQ(kp.good(), true) << failmsg << " key generation for scalar encrypt/decrypt failed";
@@ -1764,22 +1779,23 @@ protected:
             // low-degree function to check linear implementation
             std::vector<double> coefficients5{0, 1, 1, -1};
 
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(input);
+            auto aux             = cc->createCKKSPtxtAuxDefaults();
+            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(input, aux);
 
             std::vector<std::complex<double>> output1{0.705191, 1.38285, 3.97211, 5.60216, 4.86358};
-            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1);
+            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1, aux);
 
             std::vector<std::complex<double>> output2{-0.0526215, 0.217555, 1.76118, 2.85032, 2.34941};
-            Plaintext plaintextResult2 = cc->MakeCKKSPackedPlaintext(output2);
+            Plaintext plaintextResult2 = cc->MakeCKKSPackedPlaintext(output2, aux);
 
             std::vector<std::complex<double>> output3{0.0000152588, 0.00332329, 0.185302, 0.440127, 0.313132};
-            Plaintext plaintextResult3 = cc->MakeCKKSPackedPlaintext(output3);
+            Plaintext plaintextResult3 = cc->MakeCKKSPackedPlaintext(output3, aux);
 
             std::vector<std::complex<double>> output4{-0.59168396, -0.69253274, 0.12306489, 0.93308964, 0.54980166};
-            Plaintext plaintextResult4 = cc->MakeCKKSPackedPlaintext(output4);
+            Plaintext plaintextResult4 = cc->MakeCKKSPackedPlaintext(output4, aux);
 
             std::vector<std::complex<double>> output5{0.625, 0.847, 0.9809999999, 0.995125, 0.990543};
-            Plaintext plaintextResult5 = cc->MakeCKKSPackedPlaintext(output5);
+            Plaintext plaintextResult5 = cc->MakeCKKSPackedPlaintext(output5, aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();
@@ -1861,8 +1877,9 @@ protected:
         try {
             CryptoContext<Element> cc(UnitTestGenerateContext(testData.params));
 
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7);
-            Plaintext plaintext2 = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7neg);
+            auto aux             = cc->createCKKSPtxtAuxDefaults();
+            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7, aux);
+            Plaintext plaintext2 = cc->MakeCKKSPackedPlaintext(vectorOfInts0_7neg, aux);
 
             // Generate encryption keys
             KeyPair<Element> kp = cc->KeyGen();

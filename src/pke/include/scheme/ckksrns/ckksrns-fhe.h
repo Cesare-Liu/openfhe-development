@@ -174,8 +174,8 @@ public:
     // Bootstrap Wrapper
     //------------------------------------------------------------------------------
 
-    void EvalBootstrapSetup(const CryptoContextImpl<DCRTPoly>& cc, std::vector<uint32_t> levelBudget,
-                            std::vector<uint32_t> dim1, uint32_t slots) override;
+    void EvalBootstrapSetup(const CryptoContextImpl<DCRTPoly>& cc, const std::vector<uint32_t>& levelBudget,
+                            const std::vector<uint32_t>& dim1, uint32_t slots) override;
 
     std::shared_ptr<std::map<usint, EvalKey<DCRTPoly>>> EvalBootstrapKeyGen(const PrivateKey<DCRTPoly> privateKey,
                                                                             uint32_t slots) override;

@@ -442,12 +442,13 @@ protected:
                 std::vector<std::complex<double>> vectorOfInts1 = {0, 1, 2, 3, 4, 5, 6, 7};
                 std::vector<std::complex<double>> vectorOfInts2 = {7, 6, 5, 4, 3, 2, 1, 0};
 
-                plaintext1 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfInts1);
-                plaintext2 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfInts2);
+                auto aux   = cryptoContext->createCKKSPtxtAuxDefaults();
+                plaintext1 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfInts1, aux);
+                plaintext2 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfInts2, aux);
 
                 std::vector<std::complex<double>> vectorOfIntsResult = {0, 6, 10, 12, 12, 10, 6, 0};
 
-                plaintextResult = cryptoContext->MakeCKKSPackedPlaintext(vectorOfIntsResult);
+                plaintextResult = cryptoContext->MakeCKKSPackedPlaintext(vectorOfIntsResult, aux);
             }
             else {
                 std::vector<int64_t> vectorOfInts1 = {0, 1, 2, 3, 4, 5, 6, 7};
@@ -556,14 +557,15 @@ protected:
                 std::vector<std::complex<double>> vectorOfInts1 = {0, 1, 2, 3, 4, 5, 6, 7};
                 std::vector<std::complex<double>> vectorOfInts2 = {7, 6, 5, 4, 3, 2, 1, 0};
 
-                plaintext1 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfInts1);
-                plaintext2 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfInts2);
+                auto aux   = cryptoContext->createCKKSPtxtAuxDefaults();
+                plaintext1 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfInts1, aux);
+                plaintext2 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfInts2, aux);
 
                 std::vector<std::complex<double>> vectorOfIntsResult  = {0, 6, 10, 12, 12, 10, 6, 0};
                 std::vector<std::complex<double>> vectorOfIntsResult2 = {0, 6, 20, 36, 48, 50, 36, 0};
 
-                plaintextResult  = cryptoContext->MakeCKKSPackedPlaintext(vectorOfIntsResult);
-                plaintextResult2 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfIntsResult2);
+                plaintextResult  = cryptoContext->MakeCKKSPackedPlaintext(vectorOfIntsResult, aux);
+                plaintextResult2 = cryptoContext->MakeCKKSPackedPlaintext(vectorOfIntsResult2, aux);
             }
             else {
                 std::vector<int64_t> vectorOfInts1 = {0, 1, 2, 3, 4, 5, 6, 7};

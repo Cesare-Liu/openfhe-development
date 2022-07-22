@@ -1571,7 +1571,7 @@ public:
     virtual std::shared_ptr<std::map<usint, EvalKey<Element>>> EvalSumRowsKeyGen(const PrivateKey<Element> privateKey,
                                                                                  const PublicKey<Element> publicKey,
                                                                                  usint rowSize,
-                                                                                 usint subringDim = 0) const {
+                                                                                 usint subringDim) const {
         if (m_AdvancedSHE) {
             if (!privateKey)
                 OPENFHE_THROW(config_error, "Input private key is nullptr");
@@ -1615,7 +1615,7 @@ public:
 
     virtual Ciphertext<Element> EvalSumRows(ConstCiphertext<Element> ciphertext, usint rowSize,
                                             const std::map<usint, EvalKey<Element>>& evalKeyMap,
-                                            usint subringDim = 0) const {
+                                            usint subringDim) const {
         if (m_AdvancedSHE) {
             if (!ciphertext)
                 OPENFHE_THROW(config_error, "Input ciphertext is nullptr");
@@ -1973,8 +1973,8 @@ public:
     // TODO Andrey: do we need this method?
     //  const std::shared_ptr<PKEBase<Element>> getAlgorithm() const { return m_PKE; }
 
-    void EvalBootstrapSetup(const CryptoContextImpl<Element>& cc, const std::vector<uint32_t>& levelBudget = {5, 4},
-                            const std::vector<uint32_t>& dim1 = {0, 0}, uint32_t slots = 0) {
+    void EvalBootstrapSetup(const CryptoContextImpl<Element>& cc, const std::vector<uint32_t>& levelBudget,
+                            const std::vector<uint32_t>& dim1, uint32_t slots) {
         if (m_FHE) {
             m_FHE->EvalBootstrapSetup(cc, levelBudget, dim1, slots);
             return;

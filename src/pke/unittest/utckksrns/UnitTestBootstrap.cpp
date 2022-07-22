@@ -265,7 +265,10 @@ protected:
                 Fill({0.111111, 0.222222, 0.333333, 0.444444, 0.555555, 0.666666, 0.777777, 0.888888}, testData.slots));
             size_t encodedLength = input.size();
 
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(input, 1, MULT_DEPTH - 1, nullptr, testData.slots);
+            auto aux             = cc->createCKKSPtxtAuxDefaults();
+            aux.depth            = MULT_DEPTH - 1;
+            aux.slots            = testData.slots;
+            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(input, aux);
             auto ciphertext1     = cc->Encrypt(keyPair.publicKey, plaintext1);
             auto ciphertextAfter = cc->EvalBootstrap(ciphertext1);
 
@@ -311,12 +314,13 @@ protected:
             auto keyPair = cc->KeyGen();
             cc->EvalAtIndexKeyGen(keyPair.secretKey, {1});
 
+            auto aux                            = cc->createCKKSPtxtAuxDefaults();
             double eps                          = 0.00000001;
             std::vector<std::complex<double>> a = {0.25, 0.5, 0.75, 1.0, 2.0, 3.0, 4.0, 5.0};
             std::vector<std::complex<double>> b = {0.5, 0.75, 1.0, 2.0, 3.0, 4.0, 5.0};
-            Plaintext plaintext_a               = cc->MakeCKKSPackedPlaintext(a);
+            Plaintext plaintext_a               = cc->MakeCKKSPackedPlaintext(a, aux);
             auto comp_a                         = plaintext_a->GetCKKSPackedValue();
-            Plaintext plaintext_b               = cc->MakeCKKSPackedPlaintext(b);
+            Plaintext plaintext_b               = cc->MakeCKKSPackedPlaintext(b, aux);
             auto comp_b                         = plaintext_b->GetCKKSPackedValue();
 
             // Test for KeySwitchExt + KeySwitchDown

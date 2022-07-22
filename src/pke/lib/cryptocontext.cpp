@@ -577,8 +577,8 @@ DecryptResult CryptoContextImpl<Element>::MultipartyDecryptFusion(
 //------------------------------------------------------------------------------
 
 template <typename Element>
-void CryptoContextImpl<Element>::EvalBootstrapSetup(std::vector<uint32_t> levelBudget, std::vector<uint32_t> dim1,
-                                                    uint32_t numSlots) {
+void CryptoContextImpl<Element>::EvalBootstrapSetup(const std::vector<uint32_t>& levelBudget,
+                                                    const std::vector<uint32_t>& dim1, uint32_t numSlots) {
     GetScheme()->EvalBootstrapSetup(*this, levelBudget, dim1, numSlots);
 }
 

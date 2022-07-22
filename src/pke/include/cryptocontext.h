@@ -211,7 +211,32 @@ protected:
     }
 
 public:
-    PrivateKey<Element> privateKey;
+    /**
+    * CKKSPackedPlaintextAuxParams is a structure storing all parameters
+    *
+    * @param depth - depth used to encode the vector
+    * @param level - level at each the vector will get encrypted
+    * @param params - parameters to be used to generate plaintext
+    * @param slots -
+    **/
+
+    struct CKKSPackedPlaintextAuxParams {
+        size_t depth                           = 1;
+        uint32_t level                         = 0;
+        const std::shared_ptr<ParmType> params = nullptr;
+        usint slots                            = 0;
+
+        CKKSPackedPlaintextAuxParams() = default;
+        CKKSPackedPlaintextAuxParams(size_t depth0, uint32_t level0, const std::shared_ptr<ParmType> params0,
+                                     usint slots0)
+            : depth(depth0), level(level0), params(params0), slots(slots0) {}
+    };
+
+    CKKSPackedPlaintextAuxParams createCKKSPtxtAuxDefaults() {
+        return CKKSPackedPlaintextAuxParams();
+    }
+    PrivateKey<Element>
+        privateKey;  // TODO (dsuponit): why is this public? should be accessible from outside the class?!
 
     /**
    * This stores the private key in the crypto context.
@@ -889,34 +914,31 @@ public:
    * MakeCKKSPackedPlaintext constructs a CKKSPackedEncoding in this context
    * from a vector of complex numbers
    * @param value - input vector
-   * @paran depth - depth used to encode the vector
-   * @param level - level at each the vector will get encrypted
-   * @param params - parameters to be usef for the ciphertext
+   * @param aux - additional parameters used to generate plaintext
    * @return plaintext
    */
-    virtual Plaintext MakeCKKSPackedPlaintext(const std::vector<std::complex<double>>& value, size_t depth = 1,
-                                              uint32_t level = 0, const std::shared_ptr<ParmType> params = nullptr,
-                                              usint slots = 0) const {
-        Plaintext p;
+    virtual Plaintext MakeCKKSPackedPlaintext(const std::vector<std::complex<double>>& value,
+                                              const CKKSPackedPlaintextAuxParams& aux) const {
         const auto cryptoParams = std::dynamic_pointer_cast<CryptoParametersRNS>(GetCryptoParameters());
-        double scFact;
-
-        if (cryptoParams->GetScalingTechnique() == FLEXIBLEAUTOEXT && level == 0) {
-            scFact = cryptoParams->GetScalingFactorRealBig(level);
+        size_t depth            = aux.depth;
+        double scFact           = 0;
+        if (cryptoParams->GetScalingTechnique() == FLEXIBLEAUTOEXT && aux.level == 0) {
+            scFact = cryptoParams->GetScalingFactorRealBig(aux.level);
             // In FLEXIBLEAUTOEXT mode at level 0, we don't use the depth
             // in our encoding function, so we set it to 1 to make sure it
             // has no effect on the encoding.
             depth = 1;
         }
         else {
-            scFact = cryptoParams->GetScalingFactorReal(level);
+            scFact = cryptoParams->GetScalingFactorReal(aux.level);
         }
 
-        if (params == nullptr) {
+        Plaintext p;
+        if (aux.params == nullptr) {
             std::shared_ptr<ILDCRTParams<DCRTPoly::Integer>> elemParamsPtr;
-            if (level != 0) {
+            if (aux.level != 0) {
                 ILDCRTParams<DCRTPoly::Integer> elemParams = *(cryptoParams->GetElementParams());
-                for (uint32_t i = 0; i < level; i++) {
+                for (uint32_t i = 0; i < aux.level; i++) {
                     elemParams.PopLastParam();
                 }
                 elemParamsPtr = std::make_shared<ILDCRTParams<DCRTPoly::Integer>>(elemParams);
@@ -926,17 +948,17 @@ public:
             }
 
             p = Plaintext(std::make_shared<CKKSPackedEncoding>(elemParamsPtr, this->GetEncodingParams(), value, depth,
-                                                               level, scFact, slots));
+                                                               aux.level, scFact, aux.slots));
         }
         else {
-            p = Plaintext(std::make_shared<CKKSPackedEncoding>(params, this->GetEncodingParams(), value, depth, level,
-                                                               scFact, slots));
+            p = Plaintext(std::make_shared<CKKSPackedEncoding>(aux.params, this->GetEncodingParams(), value, depth,
+                                                               aux.level, scFact, aux.slots));
         }
 
         p->Encode();
 
         // In FLEXIBLEAUTOEXT mode, a fresh plaintext at level 0 always has depth 2.
-        if (cryptoParams->GetScalingTechnique() == FLEXIBLEAUTOEXT && level == 0) {
+        if (cryptoParams->GetScalingTechnique() == FLEXIBLEAUTOEXT && aux.level == 0) {
             p->SetDepth(2);
         }
         return p;
@@ -946,18 +968,16 @@ public:
    * MakeCKKSPackedPlaintext constructs a CKKSPackedEncoding in this context
    * from a vector of real numbers
    * @param value - input vector
-   * @paran depth - depth used to encode the vector
-   * @param level - level at each the vector will get encrypted
-   * @param params - parameters to be usef for the ciphertext
+   * @param aux - additional parameters used to generate plaintext
    * @return plaintext
    */
-    virtual Plaintext MakeCKKSPackedPlaintext(const std::vector<double>& value, size_t depth = 1, uint32_t level = 0,
-                                              const std::shared_ptr<ParmType> params = nullptr, usint slots = 0) const {
+    virtual Plaintext MakeCKKSPackedPlaintext(const std::vector<double>& value,
+                                              const CKKSPackedPlaintextAuxParams& aux) const {
         std::vector<std::complex<double>> complexValue(value.size());
         std::transform(value.begin(), value.end(), complexValue.begin(),
                        [](double da) { return std::complex<double>(da); });
 
-        return MakeCKKSPackedPlaintext(complexValue, depth, level, params, slots);
+        return MakeCKKSPackedPlaintext(complexValue, aux);
     }
 
     /**
@@ -2624,16 +2644,16 @@ public:
    */
 
     /**
-   * Sets all parameters for the linear method for the FFT-like method
-   *
-   * @param levelBudget - vector of budgets for the amount of levels in encoding
-   * and decoding
-   * @param dim1 - vector of inner dimension in the baby-step giant-step routine
-   * for encoding and decoding
-   * @param slots - number of slots to be bootstrapped
-   */
-    void EvalBootstrapSetup(std::vector<uint32_t> levelBudget = {5, 4}, std::vector<uint32_t> dim1 = {0, 0},
-                            uint32_t slots = 0);
+  * Sets all parameters for the linear method for the FFT-like method
+  *
+  * @param levelBudget - vector of budgets for the amount of levels in encoding
+  * and decoding
+  * @param dim1 - vector of inner dimension in the baby-step giant-step routine
+  * for encoding and decoding
+  * @param slots - number of slots to be bootstrapped
+  */
+    void EvalBootstrapSetup(const std::vector<uint32_t>& levelBudget = {5, 4},
+                            const std::vector<uint32_t>& dim1 = {0, 0}, uint32_t slots = 0);
 
     /**
    * Generates all automorphism keys for EvalBT.
@@ -2690,6 +2710,7 @@ protected:
     std::vector<usint> m_autoIdxList;
 };
 
+static const CryptoContextImpl<Element>::CKKSPackedPlaintextAuxParams CKKSPtxtAuxDefaults;
 }  // namespace lbcrypto
 
 #endif /* SRC_PKE_CRYPTOCONTEXT_H_ */

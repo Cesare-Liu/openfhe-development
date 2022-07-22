@@ -42,8 +42,8 @@ namespace lbcrypto {
 // Bootstrap Wrapper
 //------------------------------------------------------------------------------
 
-void FHECKKSRNS::EvalBootstrapSetup(const CryptoContextImpl<DCRTPoly>& cc, std::vector<uint32_t> levelBudget,
-                                    std::vector<uint32_t> dim1, uint32_t numSlots) {
+void FHECKKSRNS::EvalBootstrapSetup(const CryptoContextImpl<DCRTPoly>& cc, const std::vector<uint32_t>& levelBudget,
+                                    const std::vector<uint32_t>& dim1, uint32_t numSlots) {
     const auto cryptoParams = std::dynamic_pointer_cast<CryptoParametersCKKSRNS>(cc.GetCryptoParameters());
 
     if (cryptoParams->GetKeySwitchTechnique() != HYBRID)

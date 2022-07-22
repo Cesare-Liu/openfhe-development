@@ -66,14 +66,14 @@ public:
     /**
    * Sets all parameters for the linear method for the FFT-like method
    *
-   * @param levelBudget - vector of budgets for the amount of levels in encoding
-   * and decoding
-   * @param dim1 - vector of inner dimension in the baby-step giant-step routine
-   * for encoding and decoding
-   * @param slots - number of slots to be bootstrapped
+   * @param levelBudget - vector of budgets for the amount of levels in encoding and decoding.
+   *                      Use {5, 4} as default.
+   * @param dim1 - vector of inner dimension in the baby-step giant-step routine for encoding and decoding.
+   *                      Use {0, 0} as default.
+   * @param slots - number of slots to be bootstrapped. Use 0 as default
    */
-    virtual void EvalBootstrapSetup(const CryptoContextImpl<Element>& cc, std::vector<uint32_t> levelBudget = {5, 4},
-                                    std::vector<uint32_t> dim1 = {0, 0}, uint32_t slots = 0) {
+    virtual void EvalBootstrapSetup(const CryptoContextImpl<Element>& cc, const std::vector<uint32_t>& levelBudget,
+                                    const std::vector<uint32_t>& dim1, uint32_t slots) {
         OPENFHE_THROW(not_implemented_error, "Not supported");
     }
 

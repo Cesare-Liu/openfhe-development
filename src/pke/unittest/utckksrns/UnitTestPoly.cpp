@@ -243,22 +243,21 @@ protected:
             // low-degree function to check linear implementation
             std::vector<double> coefficients5{0, 1, 1, -1};
 
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(input);
+            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(input, cc->createCKKSPtxtAuxDefaults());
 
             std::vector<std::complex<double>> output1{0.705191, 1.38285, 3.97211, 5.60216, 4.86358};
-            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1);
+            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1, cc->createCKKSPtxtAuxDefaults());
 
             std::vector<std::complex<double>> output2{-0.0526215, 0.217555, 1.76118, 2.85032, 2.34941};
-            Plaintext plaintextResult2 = cc->MakeCKKSPackedPlaintext(output2);
-
+            Plaintext plaintextResult2 = cc->MakeCKKSPackedPlaintext(output2, cc->createCKKSPtxtAuxDefaults());
             std::vector<std::complex<double>> output3{0.0000152588, 0.00332329, 0.185302, 0.440127, 0.313132};
-            Plaintext plaintextResult3 = cc->MakeCKKSPackedPlaintext(output3);
+            Plaintext plaintextResult3 = cc->MakeCKKSPackedPlaintext(output3, cc->createCKKSPtxtAuxDefaults());
 
             std::vector<std::complex<double>> output4{-0.59168396, -0.69253274, 0.12306489, 0.93308964, 0.54980166};
-            Plaintext plaintextResult4 = cc->MakeCKKSPackedPlaintext(output4);
+            Plaintext plaintextResult4 = cc->MakeCKKSPackedPlaintext(output4, cc->createCKKSPtxtAuxDefaults());
 
             std::vector<std::complex<double>> output5{0.625, 0.847, 0.9809999999, 0.995125, 0.990543};
-            Plaintext plaintextResult5 = cc->MakeCKKSPackedPlaintext(output5);
+            Plaintext plaintextResult5 = cc->MakeCKKSPackedPlaintext(output5, cc->createCKKSPtxtAuxDefaults());
 
             auto keyPair = cc->KeyGen();
             cc->EvalMultKeyGen(keyPair.secretKey);
@@ -347,12 +346,12 @@ protected:
                  7.41236e-6,   -4.92553e-6,   2.45796e-6});
 
             std::vector<std::complex<double>> output1{0.500067, 0.0624609, 0.0156279, 0.00781142, 0.00195297};
-            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1);
+            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1, cc->createCKKSPtxtAuxDefaults());
 
             auto keyPair = cc->KeyGen();
             cc->EvalMultKeyGen(keyPair.secretKey);
 
-            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(input);
+            Plaintext plaintext1 = cc->MakeCKKSPackedPlaintext(input, cc->createCKKSPtxtAuxDefaults());
             auto ciphertext1     = cc->Encrypt(keyPair.publicKey, plaintext1);
 
             double a    = 1;
@@ -394,8 +393,8 @@ protected:
             std::vector<std::complex<double>> output1(
                 {0.0179885, 0.0474289, 0.119205, 0.268936, 0.5, 0.731064, 0.880795, 0.952571, 0.982011});
 
-            Plaintext plaintext1       = cc->MakeCKKSPackedPlaintext(input);
-            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1);
+            Plaintext plaintext1       = cc->MakeCKKSPackedPlaintext(input, cc->createCKKSPtxtAuxDefaults());
+            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1, cc->createCKKSPtxtAuxDefaults());
 
             auto keyPair = cc->KeyGen();
             cc->EvalMultKeyGen(keyPair.secretKey);
@@ -443,8 +442,8 @@ protected:
             std::vector<std::complex<double>> output1(
                 {0.0179885, 0.0474289, 0.119205, 0.268936, 0.5, 0.731064, 0.880795, 0.952571, 0.982011});
 
-            Plaintext plaintext1       = cc->MakeCKKSPackedPlaintext(input);
-            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1);
+            Plaintext plaintext1       = cc->MakeCKKSPackedPlaintext(input, cc->createCKKSPtxtAuxDefaults());
+            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1, cc->createCKKSPtxtAuxDefaults());
 
             auto keyPair = cc->KeyGen();
             cc->EvalMultKeyGen(keyPair.secretKey);
@@ -502,8 +501,8 @@ protected:
             std::vector<std::complex<double>> output1{6.80601e-09, 0.151365,  0.0935489,  -0.0935489, -0.151365,   0.,
                                                       0.151365,    0.0935489, -0.0935489, -0.151365,  -6.80601e-09};
 
-            Plaintext plaintext1       = cc->MakeCKKSPackedPlaintext(input);
-            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1);
+            Plaintext plaintext1       = cc->MakeCKKSPackedPlaintext(input, cc->createCKKSPtxtAuxDefaults());
+            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1, cc->createCKKSPtxtAuxDefaults());
 
             auto keyPair = cc->KeyGen();
             cc->EvalMultKeyGen(keyPair.secretKey);
@@ -547,8 +546,8 @@ protected:
             std::vector<double> coefficients{9, -17.25, 4.5, -6.75, -0};
             std::vector<std::complex<double>> output1{33, 10, 1, 0, 1, -2, -15};
 
-            Plaintext plaintext1       = cc->MakeCKKSPackedPlaintext(input);
-            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1);
+            Plaintext plaintext1       = cc->MakeCKKSPackedPlaintext(input, cc->createCKKSPtxtAuxDefaults());
+            Plaintext plaintextResult1 = cc->MakeCKKSPackedPlaintext(output1, cc->createCKKSPtxtAuxDefaults());
 
             auto keyPair = cc->KeyGen();
             cc->EvalMultKeyGen(keyPair.secretKey);
